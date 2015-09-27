@@ -9,7 +9,7 @@ import (
 
 /* CONSTRUCTION */
 
-// Client represents a device through which the user
+// User represents a device through which the user
 type User struct {
 	ID             string `json:"id"`
 	FirstName      string `json:"first_name"`
@@ -19,7 +19,7 @@ type User struct {
 	HashedPassword []byte
 }
 
-// NewUser is a constructor for clients given its attributes
+// NewUser is a constructor for users given its attributes
 func NewUser(firstName, lastName, email, password, scope string) (*User, error) {
 	hashedPass, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 
@@ -37,22 +37,22 @@ func NewUser(firstName, lastName, email, password, scope string) (*User, error) 
 	return u, nil
 }
 
-// SetClientID sets client's ID
+// SetUserID sets user's ID
 func (u *User) SetFirstName(fname string) {
 	u.FirstName = fname
 }
 
-// SetClientSecret sets client's secret
+// SetUserSecret sets user's secret
 func (u *User) SetLastName(lname string) {
 	u.LastName = lname
 }
 
-// SetClientURI sets uri for a client
+// SetUserURI sets uri for a user
 func (u *User) SetEmail(email string) {
 	u.Email = email
 }
 
-// AddScope adds a new scope (maybe more) to the client scopes
+// AddScope adds a new scope (maybe more) to the user scopes
 func (u *User) AddScope(scope string) {
 	if strings.Contains(scope, " ") || strings.Contains(u.Scope, scope) {
 		return
@@ -72,19 +72,19 @@ func (u *User) AddScopes(scopes ...string) {
 // SaveUser stores user in database
 func (u *User) SaveUser() error {
 	db := commonDB.NewRedisClient()
-	return db.StoreStruct(u.ID, u)
+	return db.StoreStruct(u.Email, u)
 }
 
 // FetchUser tries to fetch an user based on an ID
-func FetchUser(id string) (*User, error) {
+func FetchUser(email string) (*User, error) {
 	db := commonDB.NewRedisClient()
 	u := User{}
-	err := db.GetStruct(id, &u)
+	err := db.GetStruct(email, &u)
 	return &u, err
 }
 
 /* LOGIC */
 
 func AuthenticatePassword(password string, user *User) bool {
-	return bcrypt.CompareAndPassword(user.HashedPassword, []byte(password)) == nil
+	return bcrypt.CompareHashAndPassword(user.HashedPassword, []byte(password)) == nil
 }

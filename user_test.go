@@ -7,15 +7,17 @@ import (
 )
 
 const (
-	clientID     = "fakeid"
-	clientSecret = "fakeSecret"
-	clientURI    = "ios://fake-uri"
+	UserID    = "fakeid"
+	firstName = "John"
+	lastName  = "Doe"
+	email     = "johndoe@example.com"
+	scope     = "patient"
+	password  = "l337sp34k"
 )
 
 //helpers
-func MockClient() *Client {
-	return &Client{ClientID: clientID, ClientSecret: clientSecret, ClientURI: clientURI, Scope: "client"}
-
+func MockUser() *User {
+	return &User{ID: UserID, FirstName: firstName, LastName: lastName, Scope: "user", Email: email}
 }
 
 // Hook up gocheck into the "go test" runner.
@@ -26,35 +28,30 @@ type MySuite struct{}
 
 var _ = Suite(&MySuite{})
 
-func (s *MySuite) TestNewClient(c *C) {
-	client := MockClient()
-	c.Assert(*NewClient(clientID, clientSecret, clientURI), Equals, *client)
-}
-
 func (s *MySuite) TestAddScope(c *C) {
-	client := MockClient()
-	client.AddScope("test")
-	c.Assert(client.Scope, Equals, "client test")
+	user := MockUser()
+	user.AddScope("test")
+	c.Assert(user.Scope, Equals, "user test")
 	// scopes with whitespace are invalid!
-	client.AddScope("with whitespace")
-	c.Assert(client.Scope, Equals, "client test")
+	user.AddScope("with whitespace")
+	c.Assert(user.Scope, Equals, "user test")
 }
 
 func (s *MySuite) TestAddDuplicatedScope(c *C) {
-	client := MockClient()
-	client.AddScope("client")
-	c.Assert(client.Scope, Equals, "client")
+	user := MockUser()
+	user.AddScope("user")
+	c.Assert(user.Scope, Equals, "user")
 }
 
 func (s *MySuite) TestAddScopes(c *C) {
-	client := MockClient()
-	client.AddScopes("test1", "test2")
-	c.Assert(client.Scope, Equals, "client test1 test2")
+	user := MockUser()
+	user.AddScopes("test1", "test2")
+	c.Assert(user.Scope, Equals, "user test1 test2")
 }
 
-func (s *MySuite) TestSaveClient(c *C) {
-	client := MockClient()
-	client.SaveClient()
-	newClient, _ := FetchClient(client.ClientID)
-	c.Assert(*client, Equals, *newClient)
+func (s *MySuite) TestSaveUser(c *C) {
+	user := MockUser()
+	user.SaveUser()
+	newUser, _ := FetchUser(user.Email)
+	c.Assert((*user).ID, Equals, (*newUser).ID)
 }
