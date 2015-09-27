@@ -30,7 +30,7 @@ func (s *CtrlSuite) TestIsAuthenticatedValidToken(c *C) {
 	//checks whether token is valid
 	validToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE0NDMyNzQyODUsImlzcyI6Ind3dy5hc3ZpbnMuY29tLmJyIiwic2NvcGUiOiJwYXRpZW50Iiwic3ViIjoiam9obmRvZUBleGFtcGxlLmNvbSJ9.XYbHd0sNHnzkRlZwiTwSIdhedYKE5eKsnuJJ-D1Tnv8"
 
-	err := IsAuthenticated(validToken)
+	_, err := IsAuthenticated(validToken)
 	c.Assert(err, IsNil)
 }
 
@@ -38,6 +38,6 @@ func (s *CtrlSuite) TestIsAuthenticatedInvalidToken(c *C) {
 	//checks whether token is valid
 	validToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE0NDMyNzQyODUsImlzcyI6Ind3dy5hc3ZpbnMuY29tLmJyIiwic2NvcGUiOiJwYXRpZW50Iiwic3ViIjoiam9obmRvZUBleGFtcGxlLmNvbSJ9.XYbHd0sNHnzkRlZwiTwSIdhedYKE5fKsnuJJ-D1Tnv8"
 
-	err := IsAuthenticated(validToken)
+	_, err := IsAuthenticated(validToken)
 	c.Assert(err, NotNil)
 }

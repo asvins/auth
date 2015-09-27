@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -37,9 +38,20 @@ func AuthenticateUser(email, password string) (*User, error) {
 	return user, nil
 }
 
-func IsAuthenticated(tokenStr string) error {
-	_, err := validateToken(tokenStr)
-	return err
+func IsAuthenticated(tokenStr string) (*jwt.Token, error) {
+	return validateToken(tokenStr)
+}
+
+func IsScopeAuthenticated(tokenStr, scope string) (*jwt.Token, error) {
+	tk, err := validateToken(tokenStr)
+	if err != nil {
+		return nil, err
+	}
+	usrScope := tk.Claims["scope"].(string)
+	if !strings.Contains(usrScope, scope) {
+		return nil, fmt.Errorf("Forbidden")
+	}
+	return tk, nil
 }
 
 func validateToken(tokenStr string) (*jwt.Token, error) {
