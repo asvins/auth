@@ -49,10 +49,10 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 type userinfoResponse struct {
-	Subject  string `json:"sub"`
-	Issuer   string `json:"iss"`
-	IssuedAt string `json:"iat"`
-	Scope    string `json:"scope"`
+	Subject  string  `json:"sub"`
+	Issuer   string  `json:"iss"`
+	IssuedAt float64 `json:"iat"`
+	Scope    string  `json:"scope"`
 }
 
 func UserinfoHandler(w http.ResponseWriter, r *http.Request) {
@@ -77,7 +77,7 @@ func UserinfoHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, _ := json.Marshal(&userinfoResponse{Subject: tk.Claims["sub"].(string), Issuer: tk.Claims["iss"].(string), IssuedAt: tk.Claims["iat"].(string), Scope: tk.Claims["scope"].(string)})
+	body, _ := json.Marshal(&userinfoResponse{Subject: tk.Claims["sub"].(string), Issuer: tk.Claims["iss"].(string), IssuedAt: tk.Claims["iat"].(float64), Scope: tk.Claims["scope"].(string)})
 	w.Write(body)
 }
 
