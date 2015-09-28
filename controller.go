@@ -8,11 +8,6 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-// q horror
-var private_key = []byte("contumacia")
-
-const Issuer = "www.asvins.com.br"
-
 func Login(email, password string) (*jwt.Token, error) {
 	user, err := AuthenticateUser(email, password)
 
@@ -59,14 +54,14 @@ func validateToken(tokenStr string) (*jwt.Token, error) {
 		if ok := token.Method; ok != jwt.SigningMethodHS256 {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
-		return private_key, nil
+		return privateKey(), nil
 	})
 	return token, err
 }
 
 func issueToken(email, scope string) (*jwt.Token, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
-	token.Claims["iss"] = Issuer
+	token.Claims["iss"] = LoadConfig().Service.Issuer
 	token.Claims["iat"] = time.Now().Unix()
 	token.Claims["sub"] = email
 	token.Claims["scope"] = scope

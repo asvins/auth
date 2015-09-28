@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 )
 
 type loginParams struct {
@@ -38,7 +39,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tkStr, err := tk.SignedString(private_key)
+	tkStr, err := tk.SignedString(privateKey())
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
@@ -130,4 +131,17 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Write([]byte("Success"))
+}
+
+type discoveryResponse struct {
+	Login        string `json:"login"`
+	Userinfo     string `json:"userinfo"`
+	Registration string `json:"registration"`
+}
+
+func DiscoveryHandler(w http.ResponseWriter, r *http.Request) {
+	cfg := LoadConfig()
+	prefix := strings.Join([]string{cfg.Server.Addr, cfg.Server.Port}, ":")
+	body, _ := json.Marshal(&discoveryResponse{Login: strings.Join([]string{prefix, "/api/login"}, ""), Userinfo: strings.Join([]string{prefix, "/api/userinfo"}, ""), Registration: strings.Join([]string{prefix, "/api/registration"}, "")})
+	w.Write(body)
 }

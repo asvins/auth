@@ -1,0 +1,9 @@
+; Authconfig file
+[server]
+addr = 127.0.0.1
+port = 8080
+
+[service]
+env = development
+private-key = contumacia
+issuer = www.asvins.com.br
