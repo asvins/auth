@@ -3,7 +3,8 @@ package main
 import (
 	"strings"
 
-	"github.com/asvins/common_db"
+	"github.com/asvins/common_db/redis"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -71,13 +72,13 @@ func (u *User) AddScopes(scopes ...string) {
 
 // SaveUser stores user in database
 func (u *User) SaveUser() error {
-	db := commonDB.NewRedisClient()
+	db := redis.NewRedisClient()
 	return db.StoreStruct(u.Email, u)
 }
 
 // FetchUser tries to fetch an user based on an ID
 func FetchUser(email string) (*User, error) {
-	db := commonDB.NewRedisClient()
+	db := redis.NewRedisClient()
 	u := User{}
 	err := db.GetStruct(email, &u)
 	return &u, err
