@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"strings"
+
+	"github.com/asvins/auth/models"
 )
 
 type loginParams struct {
@@ -120,7 +122,7 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	usr, err := NewUser(reg.FirstName, reg.LastName, reg.Email, reg.Password, reg.Scope)
+	usr, err := models.NewUser(reg.FirstName, reg.LastName, reg.Email, reg.Password, reg.Scope)
 	if err != nil {
 		http.Error(w, "Invalid password", 400)
 		return
@@ -128,7 +130,12 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 
 	if usr.SaveUser() != nil {
 		http.Error(w, "Error registering user. Please try again", 500)
+		return
 	}
+
+	// Remove password for security reasons...
+	usr.HashedPassword = nil
+	sendUserCreated(usr)
 
 	w.Write([]byte("Success"))
 }

@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/asvins/auth/models"
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -18,15 +19,15 @@ func Login(email, password string) (*jwt.Token, error) {
 	return issueToken(user.Email, user.Scope)
 }
 
-func AuthenticateUser(email, password string) (*User, error) {
+func AuthenticateUser(email, password string) (*models.User, error) {
 	if len(password) < 8 {
 		return nil, fmt.Errorf("Password too short. Please use at least 8 characters.")
 	}
 
-	user, err := FetchUser(email)
+	user, err := models.FetchUser(email)
 	combinationErr := fmt.Errorf("Please check your email/password combination")
 
-	if err != nil || !AuthenticatePassword(password, user) {
+	if err != nil || !models.AuthenticatePassword(password, user) {
 		return nil, combinationErr
 	}
 

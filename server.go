@@ -6,8 +6,21 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/asvins/common_io"
 	"github.com/c0rrzin/router"
 )
+
+var (
+	producer *common_io.Producer
+	consumer *common_io.Consumer
+)
+
+func init() {
+	/*
+	*	Common io
+	 */
+	setupCommonIo()
+}
 
 func main() {
 	s := &http.Server{
