@@ -135,7 +135,7 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Remove password for security reasons...
 	usr.HashedPassword = nil
-	fireEvent(EVENT_CREATED, usr)
+	sendUserCreated(usr)
 
 	w.Write([]byte("Success"))
 }
