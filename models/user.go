@@ -1,12 +1,15 @@
 package models
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/asvins/common_db/redis"
 
 	"golang.org/x/crypto/bcrypt"
 )
+
+var IDCounter int
 
 /* CONSTRUCTION */
 
@@ -69,10 +72,21 @@ func (u *User) AddScopes(scopes ...string) {
 }
 
 /* DATABASE */
+func GetNextID() int {
+	db := redis.NewRedisClient()
+	id, err := strconv.Atoi(db.Get("id_counter").Val())
+	if err != nil {
+		id = 0
+	}
+	id += 1
+	db.Set("id_counter", strconv.Itoa(id), 0)
+	return id
+}
 
 // SaveUser stores user in database
 func (u *User) SaveUser() error {
 	db := redis.NewRedisClient()
+	u.ID = GetNextID()
 	return db.StoreStruct(u.Email, u)
 }
 

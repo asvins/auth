@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -137,7 +138,7 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 	usr.HashedPassword = nil
 	sendUserCreated(usr)
 
-	w.Write([]byte("Success"))
+	w.Write(fmt.Fprintf(w, `{"id": %v}`, usr.ID))
 }
 
 type discoveryResponse struct {
