@@ -7,6 +7,7 @@ import (
 
 	"github.com/asvins/auth/models"
 	"github.com/asvins/common_io"
+	"github.com/asvins/notification/mailer"
 	"github.com/asvins/utils/config"
 )
 
@@ -39,5 +40,14 @@ func sendUserCreated(usr *models.User) {
 		return
 	}
 
+	m := mailer.Mail{
+		To:      []string{usr.Email},
+		Subject: "Bem Vindo!",
+		Body:    mailer.TemplateWelcome,
+	}
+
+	mMsg, _ json.Marshal(m)
+
+	producer.Publish("send_mail", mMsg)
 	producer.Publish(topic, b)
 }
