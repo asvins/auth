@@ -46,7 +46,7 @@ func sendUserCreated(usr *models.User) {
 		Body:    mailer.TemplateWelcome,
 	}
 
-	mMsg, _ json.Marshal(m)
+	mMsg, _ := json.Marshal(m)
 
 	producer.Publish("send_mail", mMsg)
 	producer.Publish(topic, b)
