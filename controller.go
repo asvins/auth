@@ -16,7 +16,7 @@ func Login(email, password string) (*jwt.Token, error) {
 		return nil, err
 	}
 
-	return issueToken(user.Email, user.Scope)
+	return issueToken(user.ID, user.Email, user.Scope)
 }
 
 func AuthenticateUser(email, password string) (*models.User, error) {
@@ -60,11 +60,12 @@ func validateToken(tokenStr string) (*jwt.Token, error) {
 	return token, err
 }
 
-func issueToken(email, scope string) (*jwt.Token, error) {
+func issueToken(id int, email, scope string) (*jwt.Token, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	token.Claims["iss"] = LoadConfig().Service.Issuer
 	token.Claims["iat"] = time.Now().Unix()
 	token.Claims["sub"] = email
 	token.Claims["scope"] = scope
+	token.Claims["id"] = id
 	return token, nil
 }
